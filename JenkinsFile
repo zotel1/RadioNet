@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment{
-        
+        BUCKET = "aws-digitalnao"
+
     }
 
     stages {
