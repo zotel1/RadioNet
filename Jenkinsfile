@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment{
-        BUCKET = "aws-digitalnao"
+        BUCKET = "aws-web-digitalnao-1"
 
     }
 
