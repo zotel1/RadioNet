@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11'
+        }
+    }
     environment {
         BUCKET = "aws-web-digitalnao-1"
     }
@@ -9,29 +13,14 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    # Instalar python3-venv
-                    sudo apt-get update
-                    sudo apt-get install -y python3-venv
-                '''
-            }
-        }
         stage('Setup AWS CLI') {
             steps {
                 sh '''
-                    # Crear entorno virtual
-                    python3 -m venv venv
-
-                    # Activar el entorno virtual
-                    . venv/bin/activate
-
-                    # Instalar awscli en el entorno virtual
+                    # Instalar awscli en el contenedor de Docker
                     pip install --upgrade awscli
 
                     # Verificar la instalación
-                    venv/bin/aws --version
+                    aws --version
                 '''
             }
         }
@@ -39,12 +28,9 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-digitalnao', region: 'us-east-1') {
                     sh '''
-                        # Activar el entorno virtual
-                        . venv/bin/activate
-
                         # Sincronizar con S3
-                        venv/bin/aws s3 sync . s3://$BUCKET --exclude "./git/*"
-                        venv/bin/aws s3 ls s3://$BUCKET
+                        aws s3 sync . s3://$BUCKET --exclude "./git/*"
+                        aws s3 ls s3://$BUCKET
                     '''
                 }
             }
