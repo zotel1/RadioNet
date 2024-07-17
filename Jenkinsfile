@@ -9,21 +9,20 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Install AWS CLI') {
+        stage('Setup AWS CLI') {
             steps {
                 sh '''
-                    # Install python3-pip if not already installed
-                    apt-get update
-                    apt-get install -y python3-pip
+                    # Crear entorno virtual
+                    python3 -m venv venv
 
-                    # Install awscli using pip
-                    pip3 install --upgrade awscli --user
+                    # Activar el entorno virtual
+                    . venv/bin/activate
 
-                    # Add the AWS CLI to the PATH
-                    export PATH=$PATH:$HOME/.local/bin
+                    # Instalar awscli en el entorno virtual
+                    pip install --upgrade awscli
 
-                    # Verify installation
-                    aws --version
+                    # Verificar la instalación
+                    venv/bin/aws --version
                 '''
             }
         }
@@ -31,9 +30,12 @@ pipeline {
             steps {
                 withAWS(credentials: 'aws-digitalnao', region: 'us-east-1') {
                     sh '''
-                        export PATH=$PATH:$HOME/.local/bin
-                        aws s3 sync . s3://$BUCKET --exclude "./git/*"
-                        aws s3 ls s3://$BUCKET
+                        # Activar el entorno virtual
+                        . venv/bin/activate
+
+                        # Sincronizar con S3
+                        venv/bin/aws s3 sync . s3://$BUCKET --exclude "./git/*"
+                        venv/bin/aws s3 ls s3://$BUCKET
                     '''
                 }
             }
