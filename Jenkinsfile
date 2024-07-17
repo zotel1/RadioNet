@@ -9,6 +9,15 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    # Instalar python3-venv
+                    sudo apt-get update
+                    sudo apt-get install -y python3-venv
+                '''
+            }
+        }
         stage('Setup AWS CLI') {
             steps {
                 sh '''
