@@ -12,15 +12,8 @@ pipeline {
         stage('deploy to s3') {
             steps {
                 withAWS(credentials: 'aws-digitalnao', region: 'us-east-1') {
-                    // Sincronizar archivos con S3
-                    s3Upload(bucket: "${env.BUCKET}", path: '', workingDir: '.', includePathPattern: '**', excludePathPattern: '.git/**')
-                    
-                    // Listar contenido del bucket S3
-                    script {
-                        def files = s3FindFiles(bucket: "${env.BUCKET}", path: '', maxResults: 100)
-                        files.each { file ->
-                            echo "Found file: ${file.key}"
-                        }
+                    sh `aws s3 sync . s3://$BUCKET --exclude "./git/*"`
+                    sh `aws s3 ls s3://$BUCKET`
                         }
                         }
                         }
