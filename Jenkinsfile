@@ -17,7 +17,7 @@ pipeline {
                     
                     // Listar contenido del bucket S3
                     s3FindFiles(bucket: "${env.BUCKET}", path: '', maxResults: 100).each { file ->
-                        echo "Found file: ${file.key}"}
+                        echo "Found file: ${file.key}"
                         }
                         }
                         }
