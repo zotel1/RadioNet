@@ -3,25 +3,25 @@ name: Test
 on:
   push:
     branches:
-      - main
+      - main  # Se ejecuta cuando hay un push a la rama 'main'
   pull_request:
     branches:
-      - main
+      - main  # Se ejecuta cuando se crea un pull request hacia la rama 'main'
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Usa la última versión de Ubuntu como entorno de ejecución
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2  # Clona el repositorio
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.11'
+        python-version: '3.11'  # Configura Python 3.11
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: pip install -r requirements.txt  # Instala las dependencias desde requirements.txt
 
     - name: Run tests
-      run: pytest
+      run: pytest  # Ejecuta las pruebas con pytest
